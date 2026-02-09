@@ -33,7 +33,13 @@ Before contributing, please ensure that your changes:
 ```bash
 git clone https://github.com/<your-org>/<repo>.git
 add correct env
-start pipeline on GitLab
+
+# start pipeline with GitLab --> for remote server
+
+# also you can create Dockerfiles and start localy
 
 To get email verification  code >>>
 use >>> docker logs -f <container name>
+
+
+!!! DO NOT USE THIS CODE FOR PRODACTION !!!
