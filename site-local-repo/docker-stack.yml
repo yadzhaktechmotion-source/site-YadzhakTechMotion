@@ -1,0 +1,123 @@
+version: "3.9"
+
+services:
+  web:
+    image: registry.docker.loc/root/django-site:django
+    container_name: django_web
+    expose:
+      - 8000
+    depends_on:
+      - db
+    secrets:
+      - django_secret_key
+      - django_debug
+      - django_allowed_hosts
+      - postgres_db
+      - postgres_user
+      - postgres_password
+      - db_host
+      - db_port
+      - superuser_email
+      - superuser_password
+      - gunicorn_workers
+      - gunicorn_timeout
+      - email_backend
+      - smtp_host
+      - smtp_port
+      - smtp_user
+      - smtp_password
+      - smtp_use_tls
+      - default_from_email
+      - stripe_secret_key
+      - stripe_publishable_key
+      - stripe_webhook_secret
+      - stripe_price_id
+    deploy:
+      restart_policy:
+        condition: any
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+  db:
+    image: postgres:13.0-alpine
+    container_name: django_db
+    environment:
+      POSTGRES_DB_FILE: /run/secrets/postgres_db
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_db
+      - postgres_user
+      - postgres_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    deploy:
+      restart_policy:
+        condition: any
+
+  nginx:
+    image: registry.docker.loc/root/django-site:nginx
+    container_name: django_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+    volumes:
+      - static_volume:/app/staticfiles:ro
+      - media_volume:/app/media:ro
+
+secrets:
+  django_secret_key:
+    external: true
+  django_debug:
+    external: true
+  django_allowed_hosts:
+    external: true
+  postgres_db:
+    external: true
+  postgres_user:
+    external: true
+  postgres_password:
+    external: true
+  db_host:
+    external: true
+  db_port:
+    external: true
+  superuser_email:
+    external: true
+  superuser_password:
+    external: true
+  gunicorn_workers:
+    external: true
+  gunicorn_timeout:
+    external: true
+  email_backend:
+    external: true
+  smtp_host:
+    external: true
+  smtp_port:
+    external: true
+  smtp_user:
+    external: true
+  smtp_password:
+    external: true
+  smtp_use_tls:
+    external: true
+  default_from_email:
+    external: true
+  stripe_secret_key:
+    external: true
+  stripe_publishable_key:
+    external: true
+  stripe_webhook_secret:
+    external: true
+  stripe_price_id:
+    external: true
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

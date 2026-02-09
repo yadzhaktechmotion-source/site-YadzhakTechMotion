@@ -1,0 +1,131 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - secrets
+  - release
+  - deploy
+
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+build-django:
+  stage: build
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${ACCESS_TOKEN} ${CI_REGISTRY}
+  script:
+    - docker build -t ${CI_REGISTRY_IMAGE}:django --build-arg branch=main app/.
+    - docker push ${CI_REGISTRY_IMAGE}:django
+  rules:
+    - changes:
+        - "app/**/*"
+
+build-nginx:
+  stage: build
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${ACCESS_TOKEN} ${CI_REGISTRY}
+  script:
+    - docker build -t ${CI_REGISTRY_IMAGE}:nginx --build-arg branch=main nginx/.
+    - docker push ${CI_REGISTRY_IMAGE}:nginx
+  rules:
+    - changes:
+        - "nginx/**/*"  
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+create-secrets:
+  stage: secrets
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${ACCESS_TOKEN} registry.docker.loc
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - echo "${ID_RSA}" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan ${PROD_SERVER_IP} > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - cat secrets-create.sh
+    - apk add --no-cache bash
+    - chmod +x secrets-create.sh
+
+  script:
+    - ./secrets-create.sh
+
+  rules:
+    - changes:
+        - "secrets-create.sh"
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+release-project:
+  stage: release
+  only:
+    - main
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${ACCESS_TOKEN} registry.docker.loc
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - echo "${ID_RSA}" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan ${PROD_SERVER_IP} > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - apk add docker-cli-compose
+    - cat docker-stack.yml
+    - ssh ${PROD_SERVER_USER}@${PROD_SERVER_IP} "docker login -u ${CI_REGISTRY_USER} -p ${ACCESS_TOKEN} registry.docker.loc"
+
+  script:
+    - |
+      echo " Pulling images on PROD server..."
+      ssh ${PROD_SERVER_USER}@${PROD_SERVER_IP} "
+        docker pull ${CI_REGISTRY_IMAGE}:django || exit 1;
+        docker pull ${CI_REGISTRY_IMAGE}:nginx || exit 1;
+        docker pull postgres:13.0-alpine || exit 1;
+      "
+      echo " Images pulled successfully!"
+
+    - |
+      echo " Deploying stack django..."
+      ssh ${PROD_SERVER_USER}@${PROD_SERVER_IP} \
+        "docker stack deploy -c - django" < docker-stack.yml
+
+    - |
+      for container in $CONTAINERS; do
+        if [ "$(docker inspect -f '{{.State.Paused}}' $container 2>/dev/null)" == "true" ]; then
+          echo " Unpausing $container..."
+          ssh ${PROD_SERVER_USER}@${PROD_SERVER_IP} "docker unpause $container"
+        fi
+      done
+
+    - |
+      echo " Deployment complete."
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+deploy-images-to-prod:
+  stage: deploy
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${ACCESS_TOKEN} registry.docker.loc
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - echo "${ID_RSA}" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan ${PROD_SERVER_IP} > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - cat docker-stack.yml
+    - apk add git
+    - apk add docker-cli-compose
+    - git --version
+
+  script:
+
+    - echo " Force updating web service..."
+    - ssh ${PROD_SERVER_USER}@${PROD_SERVER_IP} "docker service update --force django_web"

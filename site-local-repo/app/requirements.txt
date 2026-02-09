@@ -1,0 +1,8 @@
+Django>=5.0.0
+psycopg[binary]
+gunicorn
+Pillow
+PyPDF2
+reportlab
+xhtml2pdf
+stripe

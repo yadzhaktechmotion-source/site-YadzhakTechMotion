@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<h1 class="about-title h3">{% trans "About" %}</h1>
+<div class="about-section">
+  {% if settings_obj and settings_obj.about_image %}
+    <div class="about-photo-wrapper"><img src="{{ settings_obj.about_image.url }}" alt="about" class="about-photo"></div>
+  {% endif %}
+  {% if TEXTS.about_text %}
+    <div class="about-text">{{ TEXTS.about_text|linebreaks }}</div>
+  {% else %}
+    <div class="text-center text-muted">{% trans "Add About content in the admin." %}</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<div class="account-container">
+  <h3>{% trans "Create an Account" %}</h3>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">{% csrf_token %}
+    <div class="form-group mb-3">
+      <label for="id_first_name">{% trans "First Name" %}</label>
+      {{ form.first_name }}
+    </div>
+    <div class="form-group mb-3">
+      <label for="id_last_name">{% trans "Last Name" %}</label>
+      {{ form.last_name }}
+    </div>
+    <div class="form-group mb-3">
+      <label for="id_phone">{% trans "Phone (optional)" %}</label>
+      {{ form.phone }}
+    </div>
+    <div class="form-group mb-3">
+      <label for="id_email">{% trans "Email" %}</label>
+      {{ form.email }}
+    </div>
+    <div class="form-group mb-3">
+      <label for="id_email_confirm">{% trans "Confirm Email" %}</label>
+      {{ form.email_confirm }}
+    </div>
+    <button type="submit" class="btn btn-success w-100">{% trans "Submit" %}</button>
+  </form>
+
+  <div class="text-center mt-3">
+    <p>{% trans "Already have an account? " %}<a href="{% url 'login' %}?login=1">{% trans "Login here" %}</a>.</p>
+  </div>
+</div>
+{% endblock %}

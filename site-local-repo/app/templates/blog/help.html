@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<h1 class="h3 mb-4">{% trans "Help" %}</h1>
+{% if TEXTS.help_text %}
+  <div class="help-wrapper container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8">
+        <div class="help-card shadow-sm border-0"><div class="help-body">{{ TEXTS.help_text|linebreaks }}</div></div>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="text-center text-muted">{% trans "Add Help content in the admin." %}</div>
+{% endif %}
+{% endblock %}

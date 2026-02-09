@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1 class="support-title h3 mb-4">{% trans "Support" %}</h1>
+
+<div class="support-section container text-center py-5">
+
+  <div class="support-card mx-auto p-4 rounded shadow-sm" style="max-width: 600px;">
+
+    {# ========== UPPER TEXT ABOVE QR (Bilingual) ========== #}
+    {% if LANGUAGE_CODE == 'uk' %}
+      {% if settings_obj.support_text_top_uk %}
+        <p class="support-top-text fw-semibold">{{ settings_obj.support_text_top_uk|linebreaks }}</p>
+      {% endif %}
+    {% else %}
+      {% if settings_obj.support_text_top_en %}
+        <p class="support-top-text fw-semibold">{{ settings_obj.support_text_top_en|linebreaks }}</p>
+      {% endif %}
+    {% endif %}
+
+    {# ========== MAIN SUPPORT TEXT ========== #}
+    {% if LANGUAGE_CODE == 'uk' %}
+      {% if settings_obj.support_text_uk %}
+        <p class="support-text my-3">{{ settings_obj.support_text_uk|linebreaks }}</p>
+      {% elif settings_obj.support_text %}
+        <p class="support-text my-3">{{ settings_obj.support_text|linebreaks }}</p>
+      {% else %}
+        <p class="support-text text-muted my-3">
+          Ви можете підтримати розвиток цього проекту, зробивши донат або поділившись ним з іншими.
+        </p>
+      {% endif %}
+    {% else %}
+      {% if settings_obj.support_text_en %}
+        <p class="support-text my-3">{{ settings_obj.support_text_en|linebreaks }}</p>
+      {% elif settings_obj.support_text %}
+        <p class="support-text my-3">{{ settings_obj.support_text|linebreaks }}</p>
+      {% else %}
+        <p class="support-text text-muted my-3">
+          You can support the development by donating or sharing our work.
+        </p>
+      {% endif %}
+    {% endif %}
+
+    {# ========== QR CODE IMAGE ========== #}
+    {% if settings_obj and settings_obj.support_qr %}
+      <div class="support-qr my-4">
+        <img src="{{ settings_obj.support_qr.url }}" alt="QR Code" class="support-qr-img" style="width:220px; height:auto;">
+      </div>
+    {% else %}
+      <div class="support-qr-placeholder text-muted my-4">
+        {% trans "Add a QR image in the admin panel." %}
+      </div>
+    {% endif %}
+
+    {# ========== FOOTER TEXT UNDER QR (Bilingual) ========== #}
+    {% if LANGUAGE_CODE == 'uk' %}
+      {% if settings_obj.support_footer_uk %}
+        <p class="support-footer mt-4 text-muted small">{{ settings_obj.support_footer_uk|linebreaks }}</p>
+      {% else %}
+        <p class="support-footer mt-4 text-muted small">
+          Дякуємо за підтримку незалежної DevOps-освіти!
+        </p>
+      {% endif %}
+    {% else %}
+      {% if settings_obj.support_footer_en %}
+        <p class="support-footer mt-4 text-muted small">{{ settings_obj.support_footer_en|linebreaks }}</p>
+      {% else %}
+        <p class="support-footer mt-4 text-muted small">
+          Thank you for supporting independent DevOps education!
+        </p>
+      {% endif %}
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

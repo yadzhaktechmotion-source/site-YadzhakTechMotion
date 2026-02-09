@@ -1,0 +1,139 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: uk\n"
+
+msgid "Home"
+msgstr "Головна"
+
+msgid "About"
+msgstr "Про нас"
+
+msgid "Help"
+msgstr "Допомога"
+
+msgid "Welcome!"
+msgstr "Ласкаво просимо!"
+
+msgid "Use the menu to explore categories and articles."
+msgstr "Скористайтеся меню, щоб переглянути категорії та статті."
+
+msgid "No links yet"
+msgstr "Поки немає посилань"
+
+msgid "Blog"
+msgstr "Блог"
+
+msgid "Categories"
+msgstr "Категорії"
+
+msgid "Back"
+msgstr "Назад"
+
+msgid "No articles yet."
+msgstr "Поки що немає статей."
+
+msgid "Add Help content in the admin."
+msgstr "Додайте текст для сторінки «Допомога» в адмінці."
+
+msgid "Add About content in the admin."
+msgstr "Додайте текст для сторінки «Про нас» в адмінці."
+
+msgid "Entertainment"
+msgstr "Розваги"
+
+msgid "Support"
+msgstr "Донат"
+
+msgid "Login"
+msgstr "Увійти"
+
+msgid "Logout"
+msgstr "Вийти"
+
+msgid "Admin Panel"
+msgstr "Адмін-панель"
+
+msgid "Enter Code"
+msgstr "Введіть код"
+
+msgid "Code was sent to"
+msgstr "Код надіслано на"
+
+msgid "Verify"
+msgstr "Підтвердити"
+
+msgid "Send Code"
+msgstr "Надіслати код"
+
+msgid "First Name"
+msgstr "Ім’я"
+
+msgid "Last Name"
+msgstr "Прізвище"
+
+msgid "Phone (optional)"
+msgstr "Телефон (необов’язково)"
+
+msgid "Submit"
+msgstr "Підтвердити"
+
+msgid "Already have an account? "
+msgstr "Вже маєте обліковий запис? "
+
+msgid "Login here"
+msgstr "Увійдіть тут"
+
+msgid "Create an Account"
+msgstr "Створити обліковий запис"
+
+msgid "Continue"
+msgstr "Продовжити"
+
+msgid "Don’t have an account? "
+msgstr "Ще не маєте облікового запису? "
+
+msgid "Create one"
+msgstr "Створити"
+
+msgid "Email"
+msgstr "Електронна пошта"
+
+msgid "Enter Verification Code"
+msgstr "Введіть код підтвердження"
+
+msgid "Hi, admin"
+msgstr "Вітаю!"
+
+msgid "Hi"
+msgstr "Привіт"
+
+msgid "Confirm Email"
+msgstr "Підтвердити електронну пошту"
+
+msgid "We sent a code to "
+msgstr "Код надіслано до "
+
+msgid "Verification Code"
+msgstr "Код підтвердження"
+
+msgid "Verify & Login"
+msgstr "Підтвердити та увійти"
+
+msgid "Back to Login"
+msgstr "Назад до входу"
+
+msgid "Full Screen"
+msgstr "На весь екран"
+
+msgid "Empowering DevOps through innovation."
+msgstr "Покращуємо DevOps через інновації."
+
+msgid "Upgrade to PRO"
+msgstr "Піднятися до PRO"
+
+msgid "Toggle light/dark"
+msgstr "Перемкнути тему"
+
+msgid "Subscription:"
+msgstr "Підписка:"

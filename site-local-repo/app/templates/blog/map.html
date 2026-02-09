@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% trans "Categories" %}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">{% trans "Categories" %}</h1>
+<div class="row g-3">
+  {% for category in categories %}
+  <div class="col-6 col-md-4 col-lg-3">
+    <a href="{% url 'category_detail' category.slug %}" class="text-decoration-none text-dark">
+      <div class="card h-100 text-center hover-card border-0 shadow-sm position-relative overflow-hidden">
+        {% if category.image %}
+          <img src="{{ category.image.url }}" class="w-100" style="height: 300px; object-fit: cover;">
+        {% else %}
+          <div class="bg-secondary w-100" style="height: 300px;"></div>
+        {% endif %}
+        <div class="category-title-overlay"></div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

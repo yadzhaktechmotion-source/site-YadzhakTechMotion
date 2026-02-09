@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+{% load static i18n %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Yadzhak Tech Motion</title>
+
+  {% if SITESETTINGS and SITESETTINGS.logo %}
+    <link rel="icon" href="{{ SITESETTINGS.logo.url }}" type="image/x-icon">
+  {% else %}
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_io/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
+  {% endif %}
+
+
+  <script>
+    (() => {
+      const saved = localStorage.getItem('ytm-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-bs-theme', theme);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+</head>
+
+<body
+  {% if SITESETTINGS and SITESETTINGS.background %}
+    style="background-image:url('{{ SITESETTINGS.background.url }}'); background-size:cover; background-attachment:fixed; background-position:center;"
+  {% endif %}
+>
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="{% url 'home' %}">
+      {% if SITESETTINGS and SITESETTINGS.logo %}
+        <img src="{{ SITESETTINGS.logo.url }}" alt="logo" style="height:36px; width:auto; object-fit:contain;">
+      {% endif %}
+      {{ SITESETTINGS.site_name|default:"YadzhakTechMotion" }}
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">{% trans "Home" %}</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="entDrop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% trans "Entertainment" %}
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="entDrop">
+            {% for l in ENTERTAINMENT_LINKS %}
+              <li><a class="dropdown-item" href="{{ l.url }}" target="_blank" rel="noopener">{{ l.title }}</a></li>
+            {% empty %}
+              <li><span class="dropdown-item text-muted">{% trans "No links yet" %}</span></li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'devops_map' %}">{% trans "Blog" %}</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">{% trans "About" %}</a></li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-2">
+
+        <!-- Support -->
+        <a href="{% url 'support' %}" 
+        class="btn btn-success btn-sm me-1 support-btn"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title="{% trans 'Support' %}">
+        <span class="support-text">💚 {% trans "Support" %}</span>
+        <span class="support-icon d-none">💚</span>
+      </a>
+      
+        <!-- GO PRO -->
+      {% if user.is_authenticated and SUBSCRIPTION_TIER == "FREE" %}
+        <a href="{% url 'subscription_checkout' %}"
+          class="btn btn-pro btn-sm me-1 pro-btn support-btn"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="{% trans 'Upgrade to PRO' %}">
+          <span class="pro-text">⭐ {% trans "Go PRO" %}</span>
+          <span class="support-icon d-none">⭐</span>
+        </a>
+      {% endif %}
+      
+      <!-- Hi, <name> -->
+      {% if user.is_authenticated %}
+        {% if user.first_name %}
+          <span class="me-2 text-success">{% trans "Hi, " %}{{ user.first_name }}</span>
+        {% elif user.is_superuser %}
+          <span class="me-2 text-success">{% trans "Hi, admin" %}</span>
+        {% else %}
+          <span class="me-2 text-success">Hi, {{ user.email|slice:":user.email.find('@')" }}</span>
+        {% endif %}
+      {% endif %}
+
+      <!-- Login / Logout -->
+        {% if user.is_authenticated %}
+          <a href="/logout/" class="btn btn-outline-danger btn-sm">{% trans "Logout" %}</a>
+        {% else %}
+          <a href="/login/" 
+             class="btn btn-login btn-sm login-btn"
+             data-bs-toggle="tooltip"
+             data-bs-placement="bottom"
+             title="{% trans 'Login' %}">
+             <span class="login-text">🔑 {% trans "Login" %}</span>
+             <span class="login-icon d-none">🔑</span>
+          </a>
+        {% endif %}
+
+        <!-- Theme toggle -->
+        <button id="themeToggle" class="btn btn-outline-secondary btn-sm" title="{% trans 'Toggle light/dark' %}">🌙</button>
+
+        <!-- Language switch -->
+        <form method="post" action="{% url 'set_language' %}" class="d-flex align-items-center">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <select name="language" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="en" {% if LANGUAGE_CODE|slice:":2" == "en" %}selected{% endif %}>EN</option>
+            <option value="uk" {% if LANGUAGE_CODE|slice:":2" == "uk" %}selected{% endif %}>UA</option>
+          </select>
+        </form>
+
+        <!-- Help -->
+        <a class="btn btn-outline-secondary btn-sm" 
+           href="{% url 'help' %}" 
+           data-bs-toggle="tooltip"
+           data-bs-placement="bottom"
+           title="{% trans 'Help' %}">?</a>
+
+        <!-- Admin Panel -->
+        {% if user.is_staff %}
+          <a href="/admin-romashka/" 
+             class="btn btn-admin btn-sm admin-btn d-flex align-items-center gap-1"
+             data-bs-toggle="tooltip"
+             data-bs-placement="bottom"
+             title="{% trans 'Admin Panel' %}">
+             <span class="admin-text">⚙️ {% trans "Admin Panel" %}</span>
+             <span class="admin-icon d-none">⚙️</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-4">
+  {% block content %}{% endblock %}
+</main>
+
+<div class="footer-bar">
+  <!-- LEFT -->
+  <span class="footer-sub">
+    {% trans "Subscription:" %}
+    {% if SUBSCRIPTION_TIER == "PRO" %}
+      <span class="sub-pro">PRO</span>
+    {% else %}
+      <span class="sub-free">FREE</span>
+    {% endif %}
+  </span>
+
+  <!-- RIGHT (same content as before) -->
+  <span class="footer-text">
+    © {{ now|date:"Y" }} your name
+    <span class="footer-dash"> — </span>
+    <span class="footer-slogan">
+      {% trans "Empowering DevOps through innovation." %}
+    </span>
+  </span>
+</div>
+
+<!-- Theme swich -->
+<script>
+const themeBtn = document.getElementById('themeToggle');
+function updateThemeIcon() {
+  const theme = document.documentElement.getAttribute('data-bs-theme');
+  themeBtn.textContent = theme === 'dark' ? '🌞' : '🌙';
+}
+updateThemeIcon();
+themeBtn.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-bs-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-bs-theme', next);
+  localStorage.setItem('ytm-theme', next);
+  updateThemeIcon();
+});
+</script>
+
+<!-- Fireworks -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const successMessage = [...document.querySelectorAll(".alert-success")]
+    .find(el => el.textContent.includes("Check your email"));
+  if (successMessage) triggerFireworks();
+});
+function triggerFireworks() {
+  const container = document.createElement("div");
+  container.className = "fireworks";
+  document.body.appendChild(container);
+  for (let i = 0; i < 30; i++) {
+    const fw = document.createElement("div");
+    fw.className = "firework";
+    const hue = Math.floor(Math.random() * 360);
+    fw.style.background = `hsl(${hue}, 80%, 60%)`;
+    fw.style.left = Math.random() * 100 + "vw";
+    fw.style.top = Math.random() * 80 + "vh";
+    fw.style.setProperty("--x", `${(Math.random() - 0.5) * 200}px`);
+    fw.style.setProperty("--y", `${(Math.random() - 0.5) * 200}px`);
+    container.appendChild(fw);
+    setTimeout(() => fw.remove(), 1200);
+  }
+  setTimeout(() => container.remove(), 1500);
+}
+</script>
+
+<!-- Tooltips (enabled only on small screens ≤1200px) -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  let tooltips = [];
+
+  function initTooltips() {
+    // Зупинити і видалити всі існуючі tooltip-и
+    tooltips.forEach(t => t.dispose());
+    tooltips = [];
+
+    // Увімкнути лише якщо ширина екрана ≤ 1200px
+    if (window.innerWidth <= 1200) {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(el => {
+        const t = new bootstrap.Tooltip(el, { trigger: 'hover focus' });
+        tooltips.push(t);
+      });
+    }
+  }
+
+  // Ініціалізуємо при старті
+  initTooltips();
+
+  // Автоматично оновлюємо при зміні розміру вікна
+  window.addEventListener('resize', () => {
+    clearTimeout(window._tooltipResizeTimer);
+    window._tooltipResizeTimer = setTimeout(initTooltips, 250);
+  });
+});
+
+/* ---------- Like/Dislike unified (no time limit) ---------- */
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".vote-btn");
+  if (!btn) return;
+
+  const id = btn.dataset.id;
+  const action = btn.dataset.action;
+  const key = `ytm_vote_${id}`;
+
+  const likeBtns = document.querySelectorAll(`[data-id="${id}"][data-action="like"]`);
+  const dislikeBtns = document.querySelectorAll(`[data-id="${id}"][data-action="dislike"]`);
+
+  try {
+    const res = await fetch(`/vote/${id}/${action}/`);
+    const data = await res.json();
+    if (!res.ok) return console.error("Vote error:", data);
+
+    // update counters
+    likeBtns.forEach(b => b.querySelector("span").textContent = data.likes);
+    dislikeBtns.forEach(b => b.querySelector("span").textContent = data.dislikes);
+
+    // cancel
+    if (data.status === "cancelled") {
+      likeBtns.forEach(b => b.classList.remove("active", "fade-out", "hidden"));
+      dislikeBtns.forEach(b => b.classList.remove("active", "fade-out", "hidden"));
+      localStorage.removeItem(key);
+      return;
+    }
+
+    // activate chosen
+    likeBtns.forEach(b => b.classList.remove("active", "fade-out"));
+    dislikeBtns.forEach(b => b.classList.remove("active", "fade-out"));
+
+    if (action === "like") {
+      likeBtns.forEach(b => b.classList.add("active"));
+      dislikeBtns.forEach(b => {
+        b.classList.add("fade-out");
+        setTimeout(() => b.classList.add("hidden"), 250);
+      });
+    } else {
+      dislikeBtns.forEach(b => b.classList.add("active"));
+      likeBtns.forEach(b => {
+        b.classList.add("fade-out");
+        setTimeout(() => b.classList.add("hidden"), 250);
+      });
+    }
+
+    localStorage.setItem(key, "voted");
+  } catch (err) {
+    console.error("Vote error:", err);
+  }
+});
+</script>
+</body>
+</html>

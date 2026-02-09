@@ -1,0 +1,139 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "About"
+msgstr "About"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Welcome!"
+msgstr "Welcome!"
+
+msgid "Use the menu to explore categories and articles."
+msgstr "Use the menu to explore categories and articles."
+
+msgid "No links yet"
+msgstr "No links yet"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Categories"
+msgstr "Categories"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "No articles yet."
+msgstr "No articles yet."
+
+msgid "Add Help content in the admin."
+msgstr "Add Help content in the admin."
+
+msgid "Add About content in the admin."
+msgstr "Add About content in the admin."
+
+msgid "Entertainment"
+msgstr "Entertainment"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Admin Panel"
+msgstr "Admin Panel"
+
+msgid "Enter Code"
+msgstr "Enter Code"
+
+msgid "Code was sent to"
+msgstr "Code was sent to"
+
+msgid "Verify"
+msgstr "Verify"
+
+msgid "Send Code"
+msgstr "Send Code"
+
+msgid "First Name"
+msgstr "First Name"
+
+msgid "Last Name"
+msgstr "Last Name"
+
+msgid "Phone (optional)"
+msgstr "Phone (optional)"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Already have an account?"
+msgstr "Already have an account?"
+
+msgid "Login here"
+msgstr "Login here"
+
+msgid "Create an Account"
+msgstr "Create an Account"
+
+msgid "Continue"
+msgstr "Continue"
+
+msgid "Don’t have an account? "
+msgstr "Don’t have an account? "
+
+msgid "Create one"
+msgstr "Create one"
+
+msgid "Enter Verification Code"
+msgstr "Enter Verification Code"
+
+msgid "Hi, admin"
+msgstr "Hi, admin"
+
+msgid "Hi"
+msgstr "Hi"
+
+msgid "Confirm Email"
+msgstr "Confirm Email"
+
+msgid "We sent a code to "
+msgstr "We sent a code to "
+
+msgid "Verification Code"
+msgstr "Verification Code"
+
+msgid "Verify & Login"
+msgstr "Verify & Login"
+
+msgid "Back to Login"
+msgstr "Back to Login"
+
+msgid "Full Screen"
+msgstr "Full Screen"
+
+msgid "Empowering DevOps through innovation."
+msgstr "Empowering DevOps through innovation."
+
+msgid "Upgrade to PRO"
+msgstr "Upgrade to PRO"
+
+msgid "Toggle light/dark"
+msgstr "Switch theme"
+
+msgid "Subscription:"
+msgstr "Subscription:"

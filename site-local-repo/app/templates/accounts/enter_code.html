@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<div class="account-container">
+  <h3>{% trans "Enter Verification Code" %}</h3>
+  <p class="text-muted small text-center">{% trans "We sent a code to " %}<b>{{ email }}</b></p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">{% csrf_token %}
+    <div class="form-group mb-3">
+      <label for="id_code">{% trans "Verification Code" %}</label>
+      {{ form.code }}
+    </div>
+    <button type="submit" class="btn btn-success w-100">{% trans "Verify & Login" %}</button>
+  </form>
+
+  <div class="text-center mt-3">
+    <a href="{% url 'login' %}?login=1" class="small">{% trans "Back to Login" %}</a>
+  </div>
+</div>
+{% endblock %}
